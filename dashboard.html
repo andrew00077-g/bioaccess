@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioAccess - Registro de Estudiantes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 font-sans text-slate-100">
+
+    <nav class="bg-slate-800 border-b border-slate-700 px-8 py-4 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-500/20">
+                <i class="fas fa-fingerprint text-2xl text-white"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight uppercase">BioAccess <span class="text-blue-400 font-light">Registro</span></h1>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <a href="materias.html" class="text-slate-400 hover:text-emerald-400 transition-all font-bold text-sm">
+                <i class="fas fa-clipboard-list mr-1"></i> Ir a Materias
+            </a>
+
+
+
+        <div class="flex items-center gap-6">
+            <a href="asistencia.html" class="text-slate-400 hover:text-emerald-400 transition-all font-bold text-sm">
+                <i class="fas fa-clipboard-list mr-1"></i> Ir a Asistencia
+            </a>
+            <span id="status-badge" class="flex items-center gap-2 px-3 py-1 bg-slate-700 rounded-full border border-slate-600">
+                <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                <span class="text-xs font-medium text-emerald-400">En Línea</span>
+            </span>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <div class="lg:col-span-4 space-y-6">
+            <section class="bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-2xl">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2 text-blue-400">
+                    <i class="fas fa-user-plus"></i> Enrolar Estudiante
+                </h2>
+                <div class="space-y-5">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">ID del Sensor (1-127)</label>
+                        <input id="reg-id" type="number" placeholder="Ej: 5" class="w-full mt-1 p-3 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition text-white font-mono">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Nombre</label>
+                        <input id="reg-nombre" type="text" placeholder="Ej: Mauricio" class="w-full mt-1 p-3 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition text-white">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Apellido</label>
+                        <input id="reg-apellido" type="text" placeholder="Ej: Pando" class="w-full mt-1 p-3 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition text-white">
+                    </div>
+                    <button onclick="registrarEstudiante()" class="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 group">
+                        <i class="fas fa-save group-hover:scale-110 transition-transform"></i> Guardar e Iniciar Sensor
+                    </button>
+                </div>
+            </section>
+
+            <section class="bg-gradient-to-br from-slate-800 to-slate-900 p-8 rounded-3xl border border-slate-700 shadow-xl">
+                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-2">Modo del Dispositivo</p>
+                <div class="flex justify-between items-center">
+                    <p id="live-modo" class="text-2xl font-black uppercase italic text-emerald-400">Lectura</p>
+                    <div id="sensor-icon" class="p-3 bg-emerald-500/10 rounded-full">
+                        <i class="fas fa-microchip text-2xl text-emerald-500"></i>
+                    </div>
+                </div>
+                <p id="sensor-instruccion" class="text-[11px] text-slate-400 mt-4 leading-relaxed">
+                    El sistema está en modo normal. Seleccione "Guardar" para activar el enrolamiento.
+                </p>
+            </section>
+        </div>
+
+        <div class="lg:col-span-8">
+            <section class="bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl overflow-hidden">
+                <div class="p-8 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
+                    <div>
+                        <h2 class="text-xl font-bold">Estudiantes Registrados</h2>
+                        <p class="text-xs text-slate-500 mt-1">Lista de huellas almacenadas en el sistema</p>
+                    </div>
+                    <span id="total-count" class="px-4 py-2 bg-slate-900 text-blue-400 rounded-xl text-xs font-black border border-slate-700 uppercase tracking-tighter">
+                        0 Estudiantes
+                    </span>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="bg-slate-900/50 text-slate-500 text-[10px] uppercase font-black tracking-widest">
+                                <th class="px-8 py-4">ID Sensor</th>
+                                <th class="px-8 py-4">Datos Personales</th>
+                                <th class="px-8 py-4">Fecha Alta</th>
+                                <th class="px-8 py-4 text-right">Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-estudiantes" class="text-sm divide-y divide-slate-700/50">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+
+async function registrarEstudiante(){
+
+    const id = document.getElementById('reg-id').value;
+    const nombre = document.getElementById('reg-nombre').value;
+    const apellido = document.getElementById('reg-apellido').value;
+
+    if(!id || !nombre || !apellido){
+        alert("Todos los campos son obligatorios");
+        return;
+    }
+
+    const respuesta = await fetch(
+        "api/registrar_estudiante.php",
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                id:id,
+                nombre:nombre,
+                apellido:apellido
+            })
+        }
+    );
+
+    const data = await respuesta.json();
+
+    if(data.success){
+
+        await fetch(
+"api/activar_registro.php",
+{
+    method:"POST",
+    headers:{
+        "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+        id:id
+    })
+}
+);
+
+        alert("Estudiante creado. Ahora coloca el dedo en el sensor cuando se active el modo registro.");
+
+        document.getElementById('reg-id').value="";
+        document.getElementById('reg-nombre').value="";
+        document.getElementById('reg-apellido').value="";
+
+        cargarEstudiantes();
+
+    }else{
+
+        alert("Error: "+data.error);
+
+    }
+}
+
+
+async function cargarEstadoSistema(){
+
+    try{
+
+        const respuesta =
+        await fetch(
+            "api/estado_sistema.php"
+        );
+
+        const sistema =
+        await respuesta.json();
+
+        const el =
+        document.getElementById(
+            "live-modo"
+        );
+
+        const instruccion =
+        document.getElementById(
+            "sensor-instruccion"
+        );
+
+        const icon =
+        document.getElementById(
+            "sensor-icon"
+        );
+
+        if(parseInt(sistema.modo) === 1){
+
+            el.innerText =
+            "Registrando...";
+
+            el.className =
+            "text-2xl font-black uppercase italic text-yellow-400 animate-pulse";
+
+            instruccion.innerText =
+            "El sensor está esperando una nueva huella.";
+
+            icon.className =
+            "p-3 bg-yellow-500/20 rounded-full";
+
+        }else{
+
+            el.innerText =
+            "Lectura";
+
+            el.className =
+            "text-2xl font-black uppercase italic text-emerald-400";
+
+            instruccion.innerText =
+            "Modo normal: sensor listo para asistencia.";
+
+            icon.className =
+            "p-3 bg-emerald-500/10 rounded-full";
+
+        }
+
+    }catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+
+async function cargarEstudiantes(){
+
+
+
+    const respuesta = await fetch(
+        "api/listar_estudiantes.php"
+    );
+
+    const estudiantes = await respuesta.json();
+
+    const lista =
+    document.getElementById(
+        "lista-estudiantes"
+    );
+
+    lista.innerHTML="";
+
+    if(estudiantes.length===0){
+
+        lista.innerHTML=
+        `<tr>
+            <td colspan="4"
+            class="p-20 text-center text-slate-600 italic">
+            No hay estudiantes registrados
+            </td>
+        </tr>`;
+
+        document.getElementById(
+        "total-count"
+        ).innerText="0 Estudiantes";
+
+        return;
+    }
+
+    estudiantes.forEach(est=>{
+
+        lista.innerHTML += `
+        <tr class="hover:bg-slate-700/20 transition-all border-b border-slate-700/30">
+
+            <td class="px-8 py-5">
+                <span class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-lg font-mono font-bold">
+                    #ID_${est.id}
+                </span>
+            </td>
+
+            <td class="px-8 py-5">
+                <div class="font-black text-slate-100 text-base uppercase">
+                    ${est.nombre}
+                </div>
+
+                <div class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+                    ${est.apellido}
+                </div>
+            </td>
+
+            <td class="px-8 py-5 text-slate-400 text-xs font-medium">
+                ${est.fecha_registro}
+            </td>
+
+            <td class="px-8 py-5 text-right">
+                <button
+                onclick="borrarEstudiante(${est.id},'${est.nombre}')"
+                class="p-2 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </td>
+
+        </tr>`;
+    });
+
+    document.getElementById(
+    "total-count"
+    ).innerText =
+    estudiantes.length + " Estudiantes";
+}
+
+async function borrarEstudiante(id,nombre){
+
+    if(!confirm(
+        "¿Eliminar a "+
+        nombre+
+        "?"
+    )) return;
+
+    const respuesta =
+    await fetch(
+        "api/eliminar_estudiante.php?id="+id
+    );
+
+    const data =
+    await respuesta.json();
+
+    if(data.success){
+
+        cargarEstudiantes();
+
+    }else{
+
+        alert("No se pudo eliminar");
+
+    }
+}
+
+cargarEstudiantes();
+
+cargarEstadoSistema();
+
+setInterval(
+    cargarEstadoSistema,
+    2000
+);
+
+</script>
+</body>
+</html>

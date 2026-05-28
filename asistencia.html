@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioAccess - Control de Asistencia</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+
+        .anim-presente{
+            animation: pulseGreen 1s infinite;
+        }
+
+        .anim-retraso{
+            animation: pulseYellow 1s infinite;
+        }
+
+        .anim-falta{
+            animation: pulseRed 1s infinite;
+        }
+
+        @keyframes pulseGreen{
+            0%{ box-shadow:0 0 0px #22c55e; }
+            50%{ box-shadow:0 0 20px #22c55e; }
+            100%{ box-shadow:0 0 0px #22c55e; }
+        }
+
+        @keyframes pulseYellow{
+            0%{ box-shadow:0 0 0px #facc15; }
+            50%{ box-shadow:0 0 20px #facc15; }
+            100%{ box-shadow:0 0 0px #facc15; }
+        }
+
+        @keyframes pulseRed{
+            0%{ box-shadow:0 0 0px #ef4444; }
+            50%{ box-shadow:0 0 20px #ef4444; }
+            100%{ box-shadow:0 0 0px #ef4444; }
+        }
+
+    </style>
+</head>
+
+<body class="bg-slate-900 text-white min-h-screen">
+
+    <nav class="bg-slate-950 border-b border-slate-800 p-5 flex justify-between items-center">
+
+        <div>
+            <h1 class="text-2xl font-black">
+                BioAccess
+                <span class="text-emerald-500">Asistencia</span>
+            </h1>
+        </div>
+
+        <div class="flex gap-4 items-center">
+
+            <select id="materia"
+            onchange="cargarMateria()"
+            class="bg-slate-800 border border-slate-700 rounded-xl p-3 outline-none">
+
+                <option value="">Seleccionar materia</option>
+
+            </select>
+
+            <button onclick="generarPDF()"
+            class="bg-red-600 hover:bg-red-700 px-5 py-3 rounded-xl font-black text-sm transition-all">
+
+                <i class="fas fa-file-pdf"></i>
+                PDF
+
+            </button>
+
+            <a href="dashboard.html"
+            class="text-slate-400 hover:text-white">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+
+        </div>
+
+    </nav>
+
+    <main id="areaPDF" class="max-w-7xl mx-auto p-8">
+
+        <div class="bg-slate-800 rounded-3xl overflow-hidden border border-slate-700">
+
+            <div class="p-6 border-b border-slate-700 flex justify-between items-center">
+
+                <div>
+
+                    <h2 id="tituloMateria"
+                    class="text-3xl font-black">
+                        ---
+                    </h2>
+
+                    <p id="horario"
+                    class="text-slate-400 mt-1">
+                        ---
+                    </p>
+
+                </div>
+
+                <div class="text-right">
+
+                    <p class="text-xs text-slate-500 uppercase">
+                        Sensor Activo
+                    </p>
+
+                    <p class="text-emerald-400 font-bold animate-pulse">
+                        <i class="fas fa-circle text-[10px]"></i>
+                        Escuchando huellas
+                    </p>
+
+                </div>
+
+            </div>
+
+            <table class="w-full">
+
+                <thead class="bg-slate-950 text-slate-400 uppercase text-xs">
+
+                    <tr>
+
+                        <th class="p-5 text-left">ID</th>
+                        <th class="p-5 text-left">Estudiante</th>
+                        <th class="p-5 text-left">Hora</th>
+                        <th class="p-5 text-center">Estado</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tabla"
+                class="divide-y divide-slate-700">
+
+                    <tr>
+                        <td colspan="4"
+                        class="p-10 text-center text-slate-500">
+                            Selecciona una materia
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+<script>
+
+const API = "api/";
+
+let materiaActual = null;
+let estudiantesMateria = [];
+
+
+
+// ================= CARGAR MATERIAS =================
+
+fetch(API + "listar_materias.php")
+.then(r => r.json())
+.then(data => {
+
+    let select = document.getElementById("materia");
+
+    data.forEach(m => {
+
+        select.innerHTML += `
+            <option value="${m.id}">
+                ${m.nombre}
+            </option>
+        `;
+
+    });
+
+});
+
+
+
+// ================= CARGAR MATERIA =================
+
+function cargarMateria(){
+
+    let id = document.getElementById("materia").value;
+
+    if(id == "") return;
+
+    fetch(API + "activar_materia.php?id=" + id);
+
+    fetch(API + "listar_materias.php")
+    .then(r => r.json())
+    .then(data => {
+
+        let mat = data.find(x => x.id == id);
+
+        materiaActual = mat;
+
+        document.getElementById("tituloMateria").innerText = mat.nombre;
+
+        document.getElementById("horario").innerText =
+            mat.hora_inicio + " - " + mat.hora_fin;
+
+        cargarLista();
+
+    });
+
+}
+
+
+
+// ================= CARGAR LISTA =================
+
+function cargarLista(){
+
+    fetch(API + "obtener_lista_asistencia.php?materia_id=" + materiaActual.id)
+    .then(r => r.json())
+    .then(data => {
+
+        estudiantesMateria = data;
+
+        renderTabla();
+
+    });
+
+}
+
+
+
+// ================= RENDER TABLA =================
+
+function renderTabla(){
+
+    let tabla = document.getElementById("tabla");
+
+    tabla.innerHTML = "";
+
+    estudiantesMateria.forEach(e => {
+
+        let clase = "";
+        let badge = "";
+
+        if(e.estado == "PRESENTE"){
+
+            clase = "anim-presente";
+
+            badge = `
+                bg-green-500/20
+                text-green-400
+                border-green-500/30
+            `;
+
+        }
+
+        else if(e.estado == "RETRASO"){
+
+            clase = "anim-retraso";
+
+            badge = `
+                bg-yellow-500/20
+                text-yellow-400
+                border-yellow-500/30
+            `;
+
+        }
+
+        else{
+
+            clase = "anim-falta";
+
+            badge = `
+                bg-red-500/20
+                text-red-400
+                border-red-500/30
+            `;
+
+        }
+
+        tabla.innerHTML += `
+
+            <tr class="hover:bg-slate-800/50 transition-all">
+
+                <td class="p-5 font-mono text-slate-400">
+                    #${e.id}
+                </td>
+
+                <td class="p-5 font-bold">
+                    ${e.nombre} ${e.apellido}
+                </td>
+
+                <td class="p-5 text-emerald-400 font-mono">
+                    ${e.hora || "--:--"}
+                </td>
+
+                <td class="p-5 text-center">
+
+                    <span class="
+                    ${badge}
+                    ${clase}
+                    px-5
+                    py-2
+                    rounded-full
+                    border
+                    text-xs
+                    font-black
+                    ">
+
+                        ${e.estado}
+
+                    </span>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+}
+
+
+
+// ================= ACTUALIZAR AUTOMATICO =================
+
+setInterval(() => {
+
+    if(materiaActual){
+
+        cargarLista();
+
+    }
+
+}, 3000);
+
+
+
+// ================= GENERAR PDF =================
+
+async function generarPDF(){
+
+    const { jsPDF } = window.jspdf;
+
+    const area = document.getElementById("areaPDF");
+
+    const canvas = await html2canvas(area, {
+        scale: 2
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+
+    const pdfHeight =
+        (canvas.height * pdfWidth) / canvas.width;
+
+    pdf.addImage(
+        imgData,
+        "PNG",
+        0,
+        0,
+        pdfWidth,
+        pdfHeight
+    );
+
+    let nombre = "asistencia";
+
+    if(materiaActual){
+        nombre = materiaActual.nombre;
+    }
+
+    pdf.save(nombre + ".pdf");
+}
+
+</script>
+
+</body>
+</html>
+
