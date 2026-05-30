@@ -1,333 +1,559 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BioAccess - Configuración de Materias</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* Estilo para los botones de días seleccionados */
-        input[type="checkbox"].day-check:checked + span {
-            background-color: #2563eb;
-            color: white;
-            border-color: #2563eb;
-        }
-    </style>
-</head>
-<body class="bg-slate-50 font-sans text-slate-900">
 
-    <nav class="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center sticky top-0 z-50">
-        <div class="flex items-center gap-4">
-            <h1 class="text-xl font-bold text-slate-800 tracking-tighter">BioAccess <span class="text-blue-600 font-light">| Académico</span></h1>
-            <a href="dashboard.html" class="text-xs font-bold text-slate-400 hover:text-blue-600 transition-colors"><i class="fas fa-arrow-left"></i> Panel Principal</a>
-        </div>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <style>
+      input[type="checkbox"].day-check:checked + span {
+        background-color: #2563eb;
+        color: white;
+        border-color: #2563eb;
+      }
+    </style>
+  </head>
+
+  <body class="bg-slate-50 font-sans text-slate-900">
+    <!-- ================= NAV ================= -->
+
+    <nav
+      class="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center sticky top-0 z-50"
+    >
+      <div class="flex items-center gap-4">
+        <h1 class="text-xl font-bold text-slate-800 tracking-tighter">
+          BioAccess
+          <span class="text-blue-600 font-light"> | Académico </span>
+        </h1>
+
+        <a
+          href="dashboard.html"
+          class="text-xs font-bold text-slate-400 hover:text-blue-600 transition-colors"
+        >
+          <i class="fas fa-arrow-left"></i>
+          Panel Principal
+        </a>
+      </div>
     </nav>
 
+    <!-- ================= MAIN ================= -->
+
     <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        <section class="lg:col-span-5 space-y-6">
-            <div class="bg-white p-8 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100">
-                <h2 class="text-xl font-black text-slate-800 mb-6 flex items-center gap-2">
-                    <i class="fas fa-plus-circle text-blue-600"></i> Nueva Materia
-                </h2>
-                
-                <div class="space-y-5">
-                    <div>
-                        <label class="text-[10px] font-black text-slate-400 uppercase ml-1">Nombre de la Asignatura</label>
-                        <input id="m-nombre" type="text" placeholder="Ej: Microcontroladores II" class="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition-all">
-                    </div>
+      <!-- ================= FORM ================= -->
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-[10px] font-black text-slate-400 uppercase ml-1">Entrada</label>
-                            <input id="h-entrada" type="time" class="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-black text-slate-400 uppercase ml-1">Salida</label>
-                            <input id="h-salida" type="time" class="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                    </div>
+      <section class="lg:col-span-5 space-y-6">
+        <div
+          class="bg-white p-8 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100"
+        >
+          <h2
+            class="text-xl font-black text-slate-800 mb-6 flex items-center gap-2"
+          >
+            <i class="fas fa-plus-circle text-blue-600"></i>
+            Nueva Materia
+          </h2>
 
-                    <div>
-                        <label class="text-[10px] font-black text-slate-400 uppercase ml-1">Días de Clase</label>
-                        <div class="flex flex-wrap gap-2 mt-2">
-                            <label class="cursor-pointer">
-                                <input type="checkbox" name="dias" value="Lun" class="hidden day-check">
-                                <span class="px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold transition-all block">LUN</span>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input type="checkbox" name="dias" value="Mar" class="hidden day-check">
-                                <span class="px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold transition-all block">MAR</span>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input type="checkbox" name="dias" value="Mie" class="hidden day-check">
-                                <span class="px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold transition-all block">MIÉ</span>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input type="checkbox" name="dias" value="Jue" class="hidden day-check">
-                                <span class="px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold transition-all block">JUE</span>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input type="checkbox" name="dias" value="Vie" class="hidden day-check">
-                                <span class="px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold transition-all block">VIE</span>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input type="checkbox" name="dias" value="Sab" class="hidden day-check">
-                                <span class="px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold transition-all block">SÁB</span>
-                            </label>
-                        </div>
-                    </div>
+          <div class="space-y-5">
+            <!-- NOMBRE -->
 
-                    <div class="bg-slate-900 p-6 rounded-2xl">
-                        <p class="text-[10px] font-black text-slate-400 uppercase mb-3">Asignar Estudiantes Registrados:</p>
-                        <div id="check-estudiantes" class="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar text-white">
-                            </div>
-                    </div>
+            <div>
+              <label
+                class="text-[10px] font-black text-slate-400 uppercase ml-1"
+              >
+                Nombre de la Asignatura
+              </label>
 
-                    <button onclick="guardarMateria()" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">
-                        Crear Materia
-                    </button>
-                </div>
+              <input
+                id="m-nombre"
+                type="text"
+                placeholder="Ej: Redes II"
+                class="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              />
             </div>
-        </section>
 
-        <section class="lg:col-span-7 space-y-4" id="lista-materias">
-            </section>
+            <!-- HORARIOS -->
 
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label
+                  class="text-[10px] font-black text-slate-400 uppercase ml-1"
+                >
+                  Entrada
+                </label>
+
+                <input
+                  id="h-entrada"
+                  type="time"
+                  class="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label
+                  class="text-[10px] font-black text-slate-400 uppercase ml-1"
+                >
+                  Salida
+                </label>
+
+                <input
+                  id="h-salida"
+                  type="time"
+                  class="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <!-- DIAS -->
+
+            <div>
+              <label
+                class="text-[10px] font-black text-slate-400 uppercase ml-1"
+              >
+                Días de Clase
+              </label>
+
+              <div class="flex flex-wrap gap-2 mt-2">
+                <label class="cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="dias"
+                    value="Lun"
+                    class="hidden day-check"
+                  />
+                  <span
+                    class="px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold transition-all block"
+                    >LUN</span
+                  >
+                </label>
+
+                <label class="cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="dias"
+                    value="Mar"
+                    class="hidden day-check"
+                  />
+                  <span
+                    class="px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold transition-all block"
+                    >MAR</span
+                  >
+                </label>
+
+                <label class="cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="dias"
+                    value="Mie"
+                    class="hidden day-check"
+                  />
+                  <span
+                    class="px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold transition-all block"
+                    >MIÉ</span
+                  >
+                </label>
+
+                <label class="cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="dias"
+                    value="Jue"
+                    class="hidden day-check"
+                  />
+                  <span
+                    class="px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold transition-all block"
+                    >JUE</span
+                  >
+                </label>
+
+                <label class="cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="dias"
+                    value="Vie"
+                    class="hidden day-check"
+                  />
+                  <span
+                    class="px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold transition-all block"
+                    >VIE</span
+                  >
+                </label>
+
+                <label class="cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="dias"
+                    value="Sab"
+                    class="hidden day-check"
+                  />
+                  <span
+                    class="px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold transition-all block"
+                    >SÁB</span
+                  >
+                </label>
+              </div>
+            </div>
+
+            <!-- ESTUDIANTES -->
+
+            <div class="bg-slate-900 p-6 rounded-2xl">
+              <p class="text-[10px] font-black text-slate-400 uppercase mb-3">
+                Asignar Estudiantes:
+              </p>
+
+              <div
+                id="check-estudiantes"
+                class="space-y-2 max-h-48 overflow-y-auto pr-2 text-white"
+              ></div>
+            </div>
+
+            <!-- BOTON -->
+
+            <button
+              onclick="guardarMateria()"
+              class="w-full py-4 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 transition-all"
+            >
+              Crear Materia
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= LISTA ================= -->
+
+      <section class="lg:col-span-7 space-y-4" id="lista-materias"></section>
     </main>
 
+    <!-- ================= MODAL ================= -->
+
+    <div
+      id="modalGestion"
+      class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50"
+    >
+      <div class="bg-white w-full max-w-xl rounded-3xl p-8">
+        <div class="flex justify-between items-center mb-6">
+          <div>
+            <h2 class="text-2xl font-black text-slate-800">
+              Gestionar Estudiantes
+            </h2>
+
+            <p id="materiaNombre" class="text-sm text-slate-500 mt-1"></p>
+          </div>
+
+          <button
+            onclick="cerrarGestion()"
+            class="text-slate-400 hover:text-red-500 text-xl"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div id="listaGestion" class="space-y-3 max-h-96 overflow-y-auto"></div>
+
+        <button
+          onclick="guardarInscripciones()"
+          class="w-full mt-6 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black"
+        >
+          Guardar Cambios
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= SCRIPT ================= -->
+
     <script>
+      let materiaGestionando = null;
 
-// ================= CARGAR ESTUDIANTES =================
-async function cargarEstudiantes(){
+      // ================= CARGAR ESTUDIANTES =================
 
-    const respuesta =
-    await fetch(
-        "api/listar_estudiantes.php"
-    );
+      async function cargarEstudiantes() {
+        const respuesta = await fetch("api/listar_estudiantes.php");
 
-    const estudiantes =
-    await respuesta.json();
+        const estudiantes = await respuesta.json();
 
-    const container =
-    document.getElementById(
-        "check-estudiantes"
-    );
+        const container = document.getElementById("check-estudiantes");
 
-    container.innerHTML = "";
+        container.innerHTML = "";
 
-    estudiantes.forEach(est=>{
+        estudiantes.forEach((est) => {
+          container.innerHTML += `
 
-        container.innerHTML += `
-        <label class="flex items-center justify-between p-2 hover:bg-slate-800 rounded-lg cursor-pointer transition-colors group">
+          <label class="flex items-center justify-between p-2 hover:bg-slate-800 rounded-lg cursor-pointer transition-colors group">
 
             <div class="flex items-center gap-3">
 
-                <input
+              <input
                 type="checkbox"
                 name="estudiantes"
                 value="${est.id}"
-                class="w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-500">
+                class="w-4 h-4">
 
-                <span class="text-sm font-medium text-slate-300 group-hover:text-white">
-                    ${est.nombre} ${est.apellido}
-                </span>
+              <span class="text-sm font-medium text-slate-300">
+                ${est.nombre} ${est.apellido}
+              </span>
 
             </div>
 
             <span class="text-[10px] font-mono text-slate-500">
-                ID: ${est.id}
+              ID: ${est.id}
             </span>
 
-        </label>
-        `;
+          </label>
 
-    });
+          `;
+        });
+      }
 
-}
+      // ================= GUARDAR =================
 
-// ================= GUARDAR MATERIA =================
-async function guardarMateria(){
+      async function guardarMateria() {
+        const nombre = document.getElementById("m-nombre").value;
 
-    const nombre =
-    document.getElementById(
-        'm-nombre'
-    ).value;
+        const hEntrada = document.getElementById("h-entrada").value;
 
-    const hEntrada =
-    document.getElementById(
-        'h-entrada'
-    ).value;
+        const hSalida = document.getElementById("h-salida").value;
 
-    const hSalida =
-    document.getElementById(
-        'h-salida'
-    ).value;
+        const dias = Array.from(
+          document.querySelectorAll('input[name="dias"]:checked'),
+        ).map((cb) => cb.value);
 
-    const dias =
-    Array.from(
-        document.querySelectorAll(
-            'input[name="dias"]:checked'
-        )
-    ).map(cb=>cb.value);
+        const inscritos = Array.from(
+          document.querySelectorAll('input[name="estudiantes"]:checked'),
+        ).map((cb) => cb.value);
 
-    const inscritos =
-    Array.from(
-        document.querySelectorAll(
-            'input[name="estudiantes"]:checked'
-        )
-    ).map(cb=>cb.value);
-
-    if(
-        !nombre ||
-        !hEntrada ||
-        !hSalida ||
-        dias.length===0 ||
-        inscritos.length===0
-    ){
-        alert(
-            "Completa todos los campos"
-        );
-        return;
-    }
-
-    const respuesta =
-    await fetch(
-        "api/guardar_materia.php",
-        {
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                nombre:nombre,
-                hora_inicio:hEntrada,
-                hora_fin:hSalida,
-                dias:dias,
-                inscritos:inscritos
-            })
+        if (
+          !nombre ||
+          !hEntrada ||
+          !hSalida ||
+          dias.length === 0 ||
+          inscritos.length === 0
+        ) {
+          alert("Completa todos los campos");
+          return;
         }
-    );
 
-    const data =
-    await respuesta.json();
+        const respuesta = await fetch("api/guardar_materia.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nombre,
+            hora_inicio: hEntrada,
+            hora_fin: hSalida,
+            dias,
+            inscritos,
+          }),
+        });
 
-    if(data.success){
+        const data = await respuesta.json();
 
-        alert("Materia creada");
+        if (data.success) {
+          alert("Materia creada");
 
-        location.reload();
+          location.reload();
+        } else {
+          alert(data.error);
+        }
+      }
 
-    }else{
+      // ================= CARGAR MATERIAS =================
 
-        alert(data.error);
+      async function cargarMaterias() {
+        const respuesta = await fetch("api/listar_materias.php");
 
-    }
+        const materias = await respuesta.json();
 
-}
+        const lista = document.getElementById("lista-materias");
 
-// ================= CARGAR MATERIAS =================
-async function cargarMaterias(){
+        lista.innerHTML = "";
 
-    const respuesta =
-    await fetch(
-        "api/listar_materias.php"
-    );
+        materias.forEach((m) => {
+          lista.innerHTML += `
 
-    const materias =
-    await respuesta.json();
-
-    const lista =
-    document.getElementById(
-        "lista-materias"
-    );
-
-    lista.innerHTML = "";
-
-    materias.forEach(m=>{
-
-        lista.innerHTML += `
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between hover:border-blue-300 transition-all">
+          <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between hover:border-blue-300 transition-all">
 
             <div class="flex items-center gap-6">
 
-                <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 text-xl font-black">
-                    ${m.nombre.charAt(0)}
-                </div>
+              <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 text-xl font-black">
+                ${m.nombre.charAt(0)}
+              </div>
 
-                <div>
+              <div>
 
-                    <h3 class="text-lg font-black text-slate-800">
-                        ${m.nombre}
-                    </h3>
+                <h3 class="text-lg font-black text-slate-800">
+                  ${m.nombre}
+                </h3>
 
-                    <div class="flex gap-4 mt-1">
+                <div class="flex gap-4 mt-1">
 
-                        <span class="text-xs text-slate-400 font-bold uppercase">
-                            <i class="far fa-calendar-alt text-blue-500"></i>
-                            ${m.dias}
-                        </span>
+                  <span class="text-xs text-slate-400 font-bold uppercase">
+                    ${m.dias}
+                  </span>
 
-                        <span class="text-xs text-slate-400 font-bold uppercase">
-                            <i class="far fa-clock text-emerald-500"></i>
-                            ${m.hora_inicio} - ${m.hora_fin}
-                        </span>
-
-                    </div>
+                  <span class="text-xs text-slate-400 font-bold uppercase">
+                    ${m.hora_inicio} - ${m.hora_fin}
+                  </span>
 
                 </div>
+
+              </div>
 
             </div>
 
-            <button
-            onclick="eliminarMateria(${m.id})"
-            class="w-10 h-10 flex items-center justify-center text-slate-300 hover:bg-red-50 hover:text-red-500 rounded-xl transition-all">
+            <div class="flex items-center gap-2">
+
+              <button
+                onclick="abrirGestion(${m.id}, '${m.nombre}')"
+                class="px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-xs font-black hover:bg-blue-100 transition-all"
+              >
+
+                <i class="fas fa-users"></i>
+                Estudiantes
+
+              </button>
+
+              <button
+                onclick="eliminarMateria(${m.id})"
+                class="w-10 h-10 flex items-center justify-center text-slate-300 hover:bg-red-50 hover:text-red-500 rounded-xl transition-all"
+              >
 
                 <i class="fas fa-trash-alt"></i>
 
-            </button>
+              </button>
 
-        </div>
-        `;
+            </div>
 
-    });
+          </div>
 
-}
+          `;
+        });
+      }
 
-// ================= ELIMINAR =================
-async function eliminarMateria(id){
+      // ================= ELIMINAR =================
 
-    if(!confirm("¿Eliminar materia?")){
-        return;
-    }
+      async function eliminarMateria(id) {
+        if (!confirm("¿Eliminar materia?")) {
+          return;
+        }
 
-    const respuesta =
-    await fetch(
-        "api/eliminar_materia.php?id="+id
-    );
+        const respuesta = await fetch("api/eliminar_materia.php?id=" + id);
 
-    const data =
-    await respuesta.json();
+        const data = await respuesta.json();
 
-    if(data.success){
+        if (data.success) {
+          cargarMaterias();
+        } else {
+          alert("No se pudo eliminar");
+        }
+      }
 
-        cargarMaterias();
+      // ================= ABRIR MODAL =================
 
-    }else{
+      async function abrirGestion(id, nombre) {
+        materiaGestionando = id;
 
-        alert("No se pudo eliminar");
+        document.getElementById("modalGestion").classList.remove("hidden");
 
-    }
+        document.getElementById("modalGestion").classList.add("flex");
 
-}
+        document.getElementById("materiaNombre").innerText = nombre;
 
-// ================= INIT =================
-cargarEstudiantes();
-cargarMaterias();
+        const resEst = await fetch("api/listar_estudiantes.php");
 
-</script>
-</body>
+        const estudiantes = await resEst.json();
+
+        const resIns = await fetch("api/listar_inscritos.php?materia_id=" + id);
+
+        const inscritos = await resIns.json();
+
+        const inscritosIDs = inscritos.map((x) => parseInt(x.estudiante_id));
+
+        const lista = document.getElementById("listaGestion");
+
+        lista.innerHTML = "";
+
+        estudiantes.forEach((est) => {
+          const checked = inscritosIDs.includes(parseInt(est.id))
+            ? "checked"
+            : "";
+
+          lista.innerHTML += `
+
+          <label class="flex items-center justify-between p-3 border border-slate-200 rounded-xl hover:bg-slate-50">
+
+            <div>
+
+              <p class="font-bold text-slate-800">
+                ${est.nombre} ${est.apellido}
+              </p>
+
+              <p class="text-xs text-slate-400">
+                ID ${est.id}
+              </p>
+
+            </div>
+
+            <input
+              type="checkbox"
+              class="w-5 h-5"
+              value="${est.id}"
+              ${checked}
+              name="gestion-estudiante">
+
+          </label>
+
+          `;
+        });
+      }
+
+      // ================= CERRAR =================
+
+      function cerrarGestion() {
+        document.getElementById("modalGestion").classList.add("hidden");
+
+        document.getElementById("modalGestion").classList.remove("flex");
+      }
+
+      // ================= GUARDAR INSCRIPCIONES =================
+
+      async function guardarInscripciones() {
+        const estudiantes = Array.from(
+          document.querySelectorAll('input[name="gestion-estudiante"]:checked'),
+        ).map((cb) => cb.value);
+
+        const respuesta = await fetch("api/actualizar_inscripciones.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            materia_id: materiaGestionando,
+            estudiantes: estudiantes,
+          }),
+        });
+
+        const data = await respuesta.json();
+
+        if (data.success) {
+          alert("Inscripciones actualizadas");
+
+          cerrarGestion();
+        } else {
+          alert("Error al actualizar");
+        }
+      }
+
+      // ================= INIT =================
+
+      cargarEstudiantes();
+
+      cargarMaterias();
+    </script>
+  </body>
 </html>

@@ -1,25 +1,37 @@
 <?php
+
+header("Content-Type: application/json");
+
 include "conexion.php";
 
 $data = json_decode(file_get_contents("php://input"), true);
 
+if (!$data) {
+
+    echo json_encode([
+        "success" => false,
+        "error" => "Sin datos"
+    ]);
+
+    exit;
+}
+
 $id = intval($data["id"]);
 
-$stmt = $conn->prepare("
+$sql = "
 UPDATE sistema
 SET modo = 1,
-    nuevo_id = ?
-");
+    nuevo_id = $id
+";
 
-$stmt->bind_param("i", $id);
+if ($conn->query($sql)) {
 
-if($stmt->execute()){
     echo json_encode([
-        "success" => true,
-        "modo" => 1,
-        "nuevo_id" => $id
+        "success" => true
     ]);
-}else{
+
+} else {
+
     echo json_encode([
         "success" => false,
         "error" => $conn->error

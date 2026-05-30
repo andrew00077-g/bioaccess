@@ -1,38 +1,48 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BioAccess - Sistema Biométrico</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        #video-bg {
-            position: fixed;
-            right: 0;
-            bottom: 0;
-            min-width: 100%;
-            min-height: 100%;
-            z-index: -1;
-            filter: brightness(0.4);
-        }
+      #video-bg {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        min-width: 100%;
+        min-height: 100%;
+        z-index: -1;
+        filter: brightness(0.4);
+      }
     </style>
-</head>
-<body class="flex items-center justify-center h-screen overflow-hidden font-sans">
-
+  </head>
+  <body
+    class="flex items-center justify-center h-screen overflow-hidden font-sans"
+  >
     <video autoplay muted loop id="video-bg">
-        <source src="https://www.pexels.com/es-es/download/video/6037155/" type="video/mp4">
+      <source
+        src="https://www.pexels.com/es-es/download/video/6037155/"
+        type="video/mp4"
+      />
     </video>
 
-    <div class="text-center text-white z-10 p-10 bg-black bg-opacity-30 rounded-3xl backdrop-blur-md border border-white/20 shadow-2xl">
-        <h1 class="text-6xl font-black mb-4 tracking-tighter italic uppercase">
-            BIO<span class="text-emerald-500">ACCESS</span>
-        </h1>
-        <p class="text-xl mb-8 text-gray-300 font-light">Gestión de Asistencia Biométrica en Tiempo Real</p>
-        
-        <a href="dashboard.html" class="px-10 py-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-lg font-black uppercase tracking-widest transition duration-300 transform hover:scale-110 shadow-[0_0_20px_rgba(16,185,129,0.4)] inline-block">
-            Iniciar Registro
-        </a>
-    </div>
+    <div
+      class="text-center text-white z-10 p-10 bg-black bg-opacity-30 rounded-3xl backdrop-blur-md border border-white/20 shadow-2xl"
+    >
+      <h1 class="text-6xl font-black mb-4 tracking-tighter italic uppercase">
+        BIO<span class="text-emerald-500">ACCESS</span>
+      </h1>
+      <p class="text-xl mb-8 text-gray-300 font-light">
+        Gestión de Asistencia Biométrica en Tiempo Real
+      </p>
 
-</body>
+      <a
+        href="dashboard.html"
+        class="px-10 py-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-lg font-black uppercase tracking-widest transition duration-300 transform hover:scale-110 shadow-[0_0_20px_rgba(16,185,129,0.4)] inline-block"
+      >
+        Iniciar Registro
+      </a>
+    </div>
+  </body>
 </html>

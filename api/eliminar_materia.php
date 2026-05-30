@@ -31,7 +31,5 @@ $stmt2->bind_param(
 $ok = $stmt2->execute();
 
 echo json_encode([
-    "success"=>$ok
+    "success" => $ok
 ]);
-
-?>

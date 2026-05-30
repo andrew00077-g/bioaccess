@@ -4,7 +4,7 @@ include "conexion.php";
 
 date_default_timezone_set("America/La_Paz");
 
-if(!isset($_GET['huella_id'])){
+if (!isset($_GET['huella_id'])) {
     exit;
 }
 
@@ -13,26 +13,28 @@ $huella_id = $_GET['huella_id'];
 $fecha = date("Y-m-d");
 $horaActual = date("H:i:s");
 
+// ================= BUSCAR ESTUDIANTE =================
 
 $sqlHuella = "
-SELECT id
+SELECT *
 FROM estudiantes
 WHERE finger_id='$huella_id'
 ";
 
 $resHuella = $conn->query($sqlHuella);
 
-if($resHuella->num_rows == 0){
+if ($resHuella->num_rows == 0) {
 
-    echo "HUELLA_NO_REGISTRADA";
+    echo "HUELLA_NO_REGISTRADA|DESCONOCIDO";
     exit;
-
 }
 
-$dataHuella = $resHuella->fetch_assoc();
+$estudiante = $resHuella->fetch_assoc();
 
-$estudiante_id = $dataHuella['id'];
+$estudiante_id = $estudiante['id'];
 
+$nombreCompleto =
+    $estudiante['nombre'] . " " . $estudiante['apellido'];
 
 
 // ================= BUSCAR MATERIA ACTIVA =================
@@ -46,17 +48,23 @@ LIMIT 1
 
 $resMateria = $conn->query($sqlMateria);
 
-if($resMateria->num_rows == 0){
 
-    echo "SIN_CLASE";
+// =========================================================
+// NO HAY MATERIA ACTIVA
+// =========================================================
+
+if ($resMateria->num_rows == 0) {
+
+    echo "REGISTRADO|" . $nombreCompleto;
     exit;
-
 }
+
+
+// ================= MATERIA ACTIVA =================
 
 $materia = $resMateria->fetch_assoc();
 
 $materia_id = $materia['id'];
-
 
 
 // ================= VERIFICAR INSCRIPCION =================
@@ -70,16 +78,14 @@ AND materia_id='$materia_id'
 
 $resIns = $conn->query($sqlIns);
 
-if($resIns->num_rows == 0){
+if ($resIns->num_rows == 0) {
 
-    echo "NO_INSCRITO";
+    echo "NO_INSCRITO|" . $nombreCompleto;
     exit;
-
 }
 
 
-
-// ================= VERIFICAR SI YA MARCO =================
+// ================= VERIFICAR YA MARCO =================
 
 $sqlDup = "
 SELECT *
@@ -91,13 +97,11 @@ AND fecha='$fecha'
 
 $resDup = $conn->query($sqlDup);
 
-if($resDup->num_rows > 0){
+if ($resDup->num_rows > 0) {
 
-    echo "YA_MARCO";
+    echo "YA_MARCO|" . $nombreCompleto;
     exit;
-
 }
-
 
 
 // ================= CALCULAR ESTADO =================
@@ -110,12 +114,10 @@ $tolerancia = $horaInicio + (15 * 60);
 
 $estado = "PRESENTE";
 
-if($horaActualTime > $tolerancia){
+if ($horaActualTime > $tolerancia) {
 
     $estado = "RETRASO";
-
 }
-
 
 
 // ================= GUARDAR ASISTENCIA =================
@@ -137,14 +139,11 @@ VALUES(
 )
 ";
 
-if($conn->query($sqlGuardar)){
+if ($conn->query($sqlGuardar)) {
 
-    echo $estado;
+    echo $estado . "|" . $nombreCompleto;
 
-}else{
+} else {
 
-    echo "ERROR_DB";
-
+    echo "ERROR_DB|" . $nombreCompleto;
 }
-
-?>

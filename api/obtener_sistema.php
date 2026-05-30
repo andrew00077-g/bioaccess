@@ -4,14 +4,13 @@ include "conexion.php";
 
 $result = $conn->query("SELECT modo, nuevo_id FROM sistema LIMIT 1");
 
-if($row = $result->fetch_assoc()){
+if ($row = $result->fetch_assoc()) {
 
     echo json_encode([
         "modo" => (int)$row["modo"],
         "nuevo_id" => (int)$row["nuevo_id"]
     ]);
-
-}else{
+} else {
 
     echo json_encode([
         "modo" => 0,

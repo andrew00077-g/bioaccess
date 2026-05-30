@@ -13,4 +13,3 @@ WHERE id='$id'
 ");
 
 echo "OK";
-?>

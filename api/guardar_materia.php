@@ -28,11 +28,11 @@ $stmt->bind_param(
     $dias
 );
 
-if(!$stmt->execute()){
+if (!$stmt->execute()) {
 
     echo json_encode([
-        "success"=>false,
-        "error"=>"La materia ya existe"
+        "success" => false,
+        "error" => "La materia ya existe"
     ]);
 
     exit;
@@ -40,7 +40,7 @@ if(!$stmt->execute()){
 
 $materia_id = $conn->insert_id;
 
-foreach($inscritos as $estudiante_id){
+foreach ($inscritos as $estudiante_id) {
 
     $stmt2 = $conn->prepare(
         "INSERT INTO inscripciones(estudiante_id,materia_id)
@@ -57,7 +57,5 @@ foreach($inscritos as $estudiante_id){
 }
 
 echo json_encode([
-    "success"=>true
+    "success" => true
 ]);
-
-?>

@@ -3,12 +3,12 @@
 include "conexion.php";
 
 $result = $conn->query(
-"SELECT * FROM estudiantes ORDER BY id"
+    "SELECT * FROM estudiantes ORDER BY id"
 );
 
 $datos = [];
 
-while($row = $result->fetch_assoc()){
+while ($row = $result->fetch_assoc()) {
     $datos[] = $row;
 }
 

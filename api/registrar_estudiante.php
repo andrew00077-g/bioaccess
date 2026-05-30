@@ -1,41 +1,48 @@
 <?php
 
-include "conexion.php";
-
 header("Content-Type: application/json");
+
+include "conexion.php";
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$id = intval($data["id"]);
-$nombre = $conn->real_escape_string($data["nombre"]);
-$apellido = $conn->real_escape_string($data["apellido"]);
+if (!$data) {
 
-// 1. validar si ya existe estudiante
-$check = $conn->query("SELECT id FROM estudiantes WHERE id=$id");
-
-if($check->num_rows > 0){
     echo json_encode([
-        "success"=>false,
-        "error"=>"El ID ya existe"
+        "success" => false,
+        "error" => "No llegaron datos"
     ]);
+
     exit;
 }
 
-// 2. insertar estudiante SIN huella aún
-$sql = "INSERT INTO estudiantes(id, nombre, apellido, finger_id)
-        VALUES($id, '$nombre', '$apellido', NULL)";
+$id = intval($data["id"]);
+$nombre = trim($data["nombre"]);
+$apellido = trim($data["apellido"]);
 
-if($conn->query($sql)){
+$sql = "
+INSERT INTO estudiantes (
+    id,
+    nombre,
+    apellido
+)
+VALUES (
+    '$id',
+    '$nombre',
+    '$apellido'
+)
+";
+
+if ($conn->query($sql)) {
 
     echo json_encode([
-        "success"=>true,
-        "id"=>$id
+        "success" => true
     ]);
 
-}else{
+} else {
 
     echo json_encode([
-        "success"=>false,
-        "error"=>$conn->error
+        "success" => false,
+        "error" => $conn->error
     ]);
 }

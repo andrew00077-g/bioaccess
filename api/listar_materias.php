@@ -10,7 +10,7 @@ $resultado = $conn->query(
 
 $materias = [];
 
-while($fila = $resultado->fetch_assoc()){
+while ($fila = $resultado->fetch_assoc()) {
 
     $stmt = $conn->prepare(
         "SELECT COUNT(*) as total
@@ -33,5 +33,3 @@ while($fila = $resultado->fetch_assoc()){
 }
 
 echo json_encode($materias);
-
-?>
